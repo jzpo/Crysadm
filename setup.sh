@@ -27,6 +27,6 @@ sudo apt-get install -y redis-server
 sudo chmod +x ${BASE_DIR}/run.sh && sudo chmod +x ${BASE_DIR}/down.sh && chmod +x ${BASE_DIR}/cron.sh 
 sudo sh ${BASE_DIR}/run.sh && sh ${BASE_DIR}/cron.sh
 
-#sudo python3.4 ${BASE_DIR}/crysadm/crysadm/crydadm_hlper.py &
-#sudo python3.4 ${BASE_DIR}/crysadm/crysadm/crydadm.py &
+sudo python3.4 ${BASE_DIR}/crysadm/crysadm/crydadm_hlper.py &
+sudo python3.4 ${BASE_DIR}/crysadm/crysadm/crydadm.py &
 
