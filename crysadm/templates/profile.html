@@ -1,0 +1,554 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    云监工设置
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs">
+                        <li class="{% if action is none or action == 'setting' %} active{% endif %}"><a href="#setting" data-toggle="tab" aria-expanded="false">设置</a></li>
+                        <li class="{% if action == 'display' %} active{% endif %}"><a href="#display" data-toggle="tab" aria-expanded="false">显示</a></li>
+                        <li class="{% if action == 'info' %} active{% endif %}"><a href="#info" data-toggle="tab" aria-expanded="false">账户</a></li>
+                        <li class="{% if action == 'profile' %} active{% endif %}"><a href="#profile" data-toggle="tab" aria-expanded="false">自动</a></li>
+                        <li class="{% if action == 'password' %} active{% endif %}"><a href="#password" data-toggle="tab" aria-expanded="false">密码</a></li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div class="tab-pane fade {% if action is none or action == 'setting' %}active in{% endif %}" id="setting">
+                            <br />
+                            {% if err_msg and (action is none or action == 'setting') %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                    {{ err_msg }}
+                                </div>
+                            {% endif %}
+                            <form role="form" action="/user/change_property/draw_money_modify/1" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-dashcube"></i></span>
+                                    <input class="form-control" name="draw_money_modify" value="{{ user_info.draw_money_modify }}" placeholder="提现金额修正值(单位：元)，默认值:10.0" type='text'>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        <button type="submit" class="btn btn-info" style="text-align:left; width: 140px;">设置提现下限(元)</button>
+                                    </span>
+                                </div>
+                            </form>
+                            <form role="form" action="/user/change_property/collect_crystal_modify/1" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-dashcube"></i></span>
+                                    <input class="form-control" name="collect_crystal_modify" value="{{user_info.collect_crystal_modify|safe}}" placeholder="自动收取水晶修正值(单位：个)，默认值:16000" type='text'>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        <button type="submit" class="btn btn-info" style="text-align:left; width: 140px;">设置收取下限(个)</button>
+                                    </span>
+                                </div>
+                            </form>
+                            <form role="form" action="/user/change_property/nas_judge_enabled/{% if user_info.nas_judge_enabled  %}0{% else %}1{% endif %}" method="post">
+                                <div class="form-group input-group">
+                                     <span class="input-group-addon"><i style="width: 16px;" class="fa fa-trello"></i>
+                                                </span>
+                                    <input class="form-control" value="{% if user_info.nas_judge_enabled %}O -（已开启NAS掉盘监测，NAS掉盘后会自动重启）{% else %}X -（已关闭NAS掉盘监测）{% endif %}" disabled>
+                                    
+                                        <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        {% if user_info.nas_judge_enabled  %}
+                                            <button type="submit" class="btn btn-danger" style="text-align:left; width: 140px;">关闭NAS掉盘监测</button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-success" style="text-align:left; width: 140px;">开启NAS掉盘监测</button>
+                                        {% endif %}
+                                        </span>
+                                    
+                                </div>
+                            </form>
+                            <form role="form" action="/user/change_property/ip_warn_enabled/{% if user_info.ip_warn_enabled  %}0{% else %}1{% endif %}" method="post">
+                                <div class="form-group input-group">
+                                     <span class="input-group-addon"><i style="width: 16px;" class="fa fa-trello"></i>
+                                                </span>
+                                    <input class="form-control" value="{% if user_info.ip_warn_enabled %}O -（已开启IP变动监测，IP变动后会邮件提醒）{% else %}X -（已关闭IP变动监测）{% endif %}" disabled>
+                                    
+                                        <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        {% if user_info.ip_warn_enabled  %}
+                                            <button type="submit" class="btn btn-danger" style="text-align:left; width: 140px;">关闭IP变动监测</button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-success" style="text-align:left; width: 140px;">开启IP变动监测</button>
+                                        {% endif %}
+                                        </span>
+                                    
+                                </div>
+                            </form>
+                            <form role="form" action="/user/change_property/nas_limit_modify/1" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-dashcube"></i></span>
+                                    <input class="form-control" name="nas_limit_modify" value="{{ user_info.nas_judge_limit }}" placeholder="硬盘容量低于该值将判定为NAS掉盘(单位：吉字节)，默认值:16" type='text'>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        <button type="submit" class="btn btn-info" style="text-align:left; width: 160px;">设置最低NAS容量(GB)</button>
+                                    </span>
+                                </div>
+                            </form>
+                            <form role="form" action="/user/change_property/auto_reboot_time/1" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-dashcube"></i></span>
+                                    <input class="form-control" name="auto_reboot_time" value="{{ user_info.auto_reboot_time }}" placeholder="自动重启时间，格式:时 日 周，留空代表禁用" type='text'>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        <button type="submit" class="btn btn-info" style="text-align:left; width: 160px;">设置自动重启计划</button>
+                                    </span>
+                                </div>
+                            </form>
+                            <form role="form" action="/user/change_property/auto_clean_cache_reserve_days/1" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-dashcube"></i></span>
+                                    <input class="form-control" name="auto_clean_cache_reserve_days" value="{{user_info.auto_clean_cache_reserve_days|safe}}" placeholder="自动缓存至少保留时间(单位：天)，默认值:0" type='text'>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        <button type="submit" class="btn btn-info" style="text-align:left; width: 160px;">设置缓存保留时间(天)</button>
+                                    </span>
+                                </div>
+                            </form>
+                            <form role="form" action="/user/change_property/clean_cache_time/1" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-dashcube"></i></span>
+                                    <div id="ionrange_clean_cache_time"></div>
+                                    <input id='auto_clean_cache_time_from' name='auto_clean_cache_time_from' type="hidden" value='{% if user_info.auto_clean_cache_time_from %}{{user_info.auto_clean_cache_time_from}}{% else %}0{% endif %}' >
+                                    <input id='auto_clean_cache_time_to' name='auto_clean_cache_time_to' type="hidden" value='{% if user_info.auto_clean_cache_time_to %}{{user_info.auto_clean_cache_time_to}}{% else %}24{% endif %}'>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        <button type="submit" class="btn btn-info">设置缓存清理时段</button>
+                                    </span>
+                                </div>
+                            </form>
+                            <form role="form" action="/user/change_property/clean_limit/{% if user_info.auto_clean_cache_enabled %}0{%else%}1{%endif%}" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-dashcube"></i></span>
+                                    <div id="ionrange_cache_limit"></div>
+                                    <input id='clean_trigger_limit' name='clean_trigger_limit' type="hidden" value='{% if user_info.clean_trigger_limit %}{{user_info.clean_trigger_limit}}{% else %}70{% endif %}' >
+                                    <input id='clean_target_limit' name='clean_target_limit' type="hidden" value='{% if user_info.clean_target_limit %}{{user_info.clean_target_limit}}{% else %}85{% endif %}'>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        {% if user_info.auto_clean_cache_enabled  %}
+                                            <button type="submit" class="btn btn-danger">禁用自动缓存清理</button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-success">启用自动缓存清理</button>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade{% if action == 'display' %} active in{% endif %}" id="display">
+                            <br />
+                            {% if err_msg and (action is none or action == 'setting') %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                    {{ err_msg }}
+                                </div>
+                            {% endif %}
+                            <form role="form" action="/user/change_property/is_show_speed_data/{% if user_info.is_show_speed_data  %}0{% else %}1{% endif %}" method="post">
+                                <div class="form-group input-group">
+                                     <span class="input-group-addon"><i style="width: 16px;" class="fa fa-trello"></i>
+                                                </span>
+                                    <input class="form-control" value="{% if user_info.is_show_speed_data %}X -（已隐藏速度曲线）{% else %}O -（已显示速度曲线）{% endif %}" disabled>
+                                    
+                                        <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        {% if user_info.is_show_speed_data  %}
+                                            <button type="submit" class="btn btn-danger" style="text-align:left; width: 140px;">显示速度曲线</button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-success" style="text-align:left; width: 140px;">隐藏速度曲线</button>
+                                        {% endif %}
+                                        </span>
+                                    
+                                </div>
+                            </form>
+
+                            <form role="form" action="/user/change_property/is_show_byname/{% if user_info.is_show_byname == 0 %}1{% elif user_info.is_show_byname == 1 %}2{% else %}0{% endif %}" method="post">
+                                <div class="form-group input-group">
+                                     <span class="input-group-addon"><i style="width: 16px;" class="fa fa-trello"></i>
+                                                </span>
+                                    <input class="form-control" value="{% if user_info.is_show_byname == 0 %}0 -（当前显示备注名）{% elif user_info.is_show_byname==1 %}1 - （当前显示手机号）{% else %}2 - （当前显示用户名）{% endif %}" disabled>
+                                        <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        {% if user_info.is_show_byname == 0 %}
+                                            <button type="submit" class="btn btn-danger" style="text-align:left; width: 140px;">显示手机号</button>
+                                        {% elif user_info.is_show_byname == 1 %}
+                                            <button type="submit" class="btn btn-warning" style="text-align:left; width: 140px;">显示用户名</button>
+                                        {% else%}
+                                            <button type="submit" class="btn btn-success" style="text-align:left; width: 140px;">显示备注名</button>
+                                        {% endif %}
+                                        </span>
+                                    
+                                </div>
+                            </form>
+                            <form action="/user/change_property/boxes_sel/1" method="post">
+                                <table class="table table-striped">
+                                    <caption>主页显示项</caption>
+                                    <tr>
+                                        <td class='col-md-3'>
+                                            <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="实时上传速度" {% if '实时上传速度' in user_info.boxes_sel %} checked='checked' {% endif %} />上传速度</label> 
+                                        </td> 
+                                        <td class='col-md-3'>
+                                            <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="实时下载速度" {% if '实时下载速度' in user_info.boxes_sel %} checked='checked' {% endif %} />下载速度</label> 
+                                        </td> 
+                                        <td class='col-md-3'>
+                                            <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="实时矿机状态"  {% if '实时矿机状态' in user_info.boxes_sel %} checked='checked' {% endif %} />矿机状态</label> 
+                                        </td>                                 
+                                    </tr>
+                                    <tr>
+                                        <td class='col-md-3'>
+                                            <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="实时账号状态"  {% if '实时账号状态' in user_info.boxes_sel %} checked='checked' {% endif %} />账号状态</label> 
+                                        </td> 
+                                        <td class='col-md-3'>
+                                            <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="实时UPNP状态"  {% if '实时UPNP状态' in user_info.boxes_sel %} checked='checked' {% endif %} />UPNP状态</label>
+                                        </td> 
+                                        <td class='col-md-3'>
+                                            <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="实时DCDN状态"  {% if '实时DCDN状态' in user_info.boxes_sel %} checked='checked' {% endif %} />DCDN状态</label> 
+                                        </td> 
+                                    </tr>
+                                    <tr>
+                                        <td class='col-md-3'>
+                                            <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="今日矿场产量"  {% if '今日矿场产量' in user_info.boxes_sel %} checked='checked' {% endif %} />今日矿场产量</label> 
+                                        </td> 
+                                        <td class='col-md-3'>
+                                            <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="本周水晶收益"  {% if '本周水晶收益' in user_info.boxes_sel %} checked='checked' {% endif %} />本周水晶收益</label>
+                                        </td> 
+                                        <td class='col-md-3'>
+                                            <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="本月水晶收益"  {% if '本月水晶收益' in user_info.boxes_sel %} checked='checked' {% endif %} />本月水晶收益</label> 
+                                        </td> 
+                                    </tr>
+                                    <tr>
+                                        <td class='col-md-3'>
+                                            <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="今日宝箱转盘"  {% if '今日宝箱转盘' in user_info.boxes_sel %} checked='checked' {% endif %} />今日宝箱转盘</label> 
+                                        </td> 
+                                        <td class='col-md-3'>
+                                            <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="本周宝箱转盘"  {% if '本周宝箱转盘' in user_info.boxes_sel %} checked='checked' {% endif %} />本周宝箱转盘</label> 
+                                        </td> 
+                                        <td class='col-md-3'>
+                                            <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="本月宝箱转盘"  {% if '本月宝箱转盘' in user_info.boxes_sel %} checked='checked' {% endif %} />本月宝箱转盘</label>
+                                        </td> 
+                                    </tr>
+                                </table>
+                                <button type="submit" class="btn btn-default pull-right">提交</button>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade{% if action == 'info' %} active in{% endif %}" id="info">
+                            <br />
+                            {% if err_msg and (action is none or action == 'info') %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                    {{ err_msg }}
+                                </div>
+                            {% endif %}
+                            <div class="form-group input-group ">
+                                <span class="input-group-addon"><span style="width: 16px; display: inline-block;">U</span></span>
+                                <input type="text" class="form-control" placeholder="" value="{{ user_info.username }}" disabled>
+                            </div>
+
+                            <div class="form-group input-group">
+                                <span class="input-group-addon"><i style="width: 16px;" class="fa fa-check"></i></span>
+                                <input type="text" class="form-control" value="{% if user_info.active %}O{% else %}X{% endif %}" disabled>
+                                <span class="input-group-addon"><span style="text-align:left; width: 90px; display: inline-block;">状态</span></span>
+                            </div>
+
+                            <div class="form-group input-group">
+                                <span class="input-group-addon"><i style="width: 16px;" class="fa fa-wrench"></i></span>
+                                <input type="text" class="form-control" value="{% if user_info.is_admin %}O{% else %}X{% endif %}" disabled>
+                                <span class="input-group-addon"><span style="text-align:left; width: 90px; display: inline-block;">管理员</span></span>
+                            </div>
+
+                            <div class="form-group input-group">
+                                <span class="input-group-addon"><i style="width: 16px;" class="fa fa-cube"></i></span>
+                                <input type="text" class="form-control" value="{{ user_info.max_account_no|default('1') }}" disabled>
+                                <span class="input-group-addon"><span style="text-align:left; width: 90px; display: inline-block;">今日消耗点数</span></span>
+                            </div>
+
+                            <div class="form-group input-group">
+                                <span class="input-group-addon"><i style="width: 16px;" class="fa fa-cubes"></i></span>
+                                <input type="text" class="form-control" value="{{ user_info.total_account_point|default('None') }}" disabled>
+                                <span class="input-group-addon">
+                                    <span style="text-align:left; width: 90px; display: inline-block;">剩余账户点数</span>
+                                </span>
+                            </div>
+                            <div class="form-group input-group">
+                                <span class="input-group-addon"><span style="width: 16px; display: inline-block;">T</span></span>
+                                <input type="text" class="form-control" name="expire_date" placeholder="预计过期时间" value="{{ user_info.expire_date|default('14') }}" disabled>
+                                <span class="input-group-addon"><span style="text-align:left; width: 90px; display: inline-block;">预计过期时间</span></span>
+                            </div>
+                            <div class="form-group input-group">
+                                <span class="input-group-addon"><i style="width: 16px;" class="fa fa-group"></i></span>
+                                <input type="text" class="form-control" value="{{ user_info.root_no|default('0') }}" disabled>
+                                <span class="input-group-addon"><span style="text-align:left; width: 90px; display: inline-block;">剩余ROOT次数</span></span>
+                            </div>
+
+                            <form role="form" action="/user/change_info" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><span style="width: 16px; display: inline-block;">@</span></span>
+                                    <input type="email" class="form-control" name="email" value="{{ user_info.email }}" placeholder="crystal@xunlei.com">
+                                </div>
+                                <a data-toggle="modal" style="margin-left:5px;float: right" class="btn btn-default" href="#modal-form">充值</a>
+                                <button type="submit" class="btn btn-default">提交</button>
+                                <button type="reset" class="btn btn-default">重置</button>
+                            </form>
+
+                        </div>
+
+                        <div class="tab-pane fade{% if action == 'profile' %} active in{% endif %}" id="profile">
+                            <br />
+                            {% if err_msg and (action == 'profile') %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                    {{ err_msg }}
+                                </div>
+                            {% endif %}
+                            <form role="form" action="/user/change_property/auto_collect/{% if user_info.auto_collect %}0{% else %}1{% endif %}" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-rmb"></i></span>
+                                    <input type="text" class="form-control" value="{% if user_info.auto_collect  %}已开启默认高于{{ user_info.collect_crystal_modify }}水晶自动收取，每{{ system.collect_crystal_interval // 60 }}分钟检测一次{% else %}X，开启后将能自动收取矿场水晶{% endif %}" disabled>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        {% if user_info.auto_collect  %}
+                                            <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消收取水晶</button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-success">收取水晶</button>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </form>
+
+                            <form role="form" action="/user/change_property/auto_drawcash/{% if user_info.auto_drawcash  %}0{% else %}1{% endif %}" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-rmb"></i></span>
+                                    <input type="text" class="form-control" value="{% if user_info.auto_drawcash %}已开启默认高于{{ user_info.draw_money_modify }}自动全额提现，每周二12点至17点间每{{ system.drawcash_crystal_interval // 60 }}分钟检测一次{% else %}X，开启后将能自动提现账户余额{% endif %}" disabled>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        {% if user_info.auto_drawcash  %}
+                                            <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消自动提现</button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-success">自动提现</button>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </form>
+
+                            <form role="form" action="/user/change_property/auto_giftbox/{% if user_info.auto_giftbox  %}0{% else %}1{% endif %}" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-rmb"></i></span>
+                                    <input type="text" class="form-control" value="{% if user_info.auto_giftbox %}已开启自动开免费宝箱、丢弃收费宝箱，每{{ system.giftbox_crystal_interval// 60 }}分钟检测一次{% else %}X，开启后将能自动开启免费宝箱并丢弃收费宝箱{% endif %}" disabled>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        {% if user_info.auto_giftbox  %}
+                                            <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消免费宝箱</button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-success">免费宝箱</button>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </form>
+
+                            <form role="form" action="/user/change_property/auto_searcht/{% if user_info.auto_searcht  %}0{% else %}1{% endif %}" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-rmb"></i></span>
+                                    <input type="text" class="form-control" value="{% if user_info.auto_searcht %}已开启自动秘银进攻，每{{ system.searcht_crystal_interval // 60 }}分钟检测一次{% else %}X，开启后将能自动秘银进攻{% endif %}" disabled>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        {% if user_info.auto_searcht  %}
+                                            <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消秘银进攻</button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-success">秘银进攻</button>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </form>
+
+                            <form role="form" action="/user/change_property/auto_revenge/{% if user_info.auto_revenge  %}0{% else %}1{% endif %}" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-rmb"></i></span>
+                                    <input type="text" class="form-control" value="{% if user_info.auto_revenge %}已开启自动秘银复仇，每{{ system.revenge_crystal_interval // 60 }}分钟检测一次{% else %}X，开启后将能自动秘银复仇{% endif %}" disabled>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        {% if user_info.auto_revenge  %}
+                                            <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消秘银复仇</button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-success">秘银复仇</button>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </form>
+
+                            <form role="form" action="/user/change_property/auto_getaward/{% if user_info.auto_getaward  %}0{% else %}1{% endif %}" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-rmb"></i></span>
+                                    <input type="text" class="form-control" value="{% if user_info.auto_getaward %}已开启自动幸运转盘，每{{ system.getaward_crystal_interval // 60 }}分钟检测一次，每天仅转前三次{% else %}X，开启后将能自动转转盘{% endif %}" disabled>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        {% if user_info.auto_getaward  %}
+                                            <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消幸运转盘</button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-success">幸运转盘</button>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </form>
+                            <form role="form" action="/user/change_property/auto_detect/{% if user_info.auto_detect  %}0{% else %}1{% endif %}" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-rmb"></i></span>
+                                    <input type="text" class="form-control" value="{% if user_info.auto_detect %}已开启自动监测矿机状态，每{{ system.auto_detect_interval // 60 }}分钟检测一次{% else %}X，关联功能:NAS掉盘重启、清理缓存、矿机异常报告{% endif %}" disabled>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        {% if user_info.auto_detect  %}
+                                            <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消自动监测</button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-success">自动监测</button>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </form>
+                            <form role="form" action="/user/change_property/auto_report/{% if user_info.auto_report  %}0{% else %}1{% endif %}" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-rmb"></i></span>
+                                    <input type="text" class="form-control" value="{% if user_info.auto_report %}已开启自动报告矿机收益{% else %}X，开启后将能在每天凌晨报告收益状况{% endif %}" disabled>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        {% if user_info.auto_report  %}
+                                            <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消自动报告</button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-success">自动报告</button>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </form>
+
+                        </div>
+
+                        <div class="tab-pane fade{% if action == 'password' %} active in{% endif %}" id="password">
+                            <br />
+                            {% if err_msg and action == 'password' %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                    {{ err_msg }}
+                                </div>
+                            {% endif %}
+                            <form role="form" action="/user/change_password" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon">UN</span>
+                                    <input type="text" class="form-control" placeholder="" value="{{ user_info.username }}" disabled>
+                                </div>
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon">OP</span>
+                                    <input type="password" class="form-control" name="old_password" placeholder="请输入老密码">
+                                </div>
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon">NP</i></span>
+                                    <input type="password" class="form-control" name="new_password" placeholder="输入新密码">
+                                    <input type="password" class="form-control" name="new2_password" placeholder="再次输入新密码">
+                                </div>
+
+                                <button type="submit" class="btn btn-default">提交</button>
+                                <button type="reset" class="btn btn-default">重置</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <div class="row">
+		<div class="col-lg-6  col-md-8 col-xs-12" id="info_cache">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    自动缓存清理说明
+                </div>
+                <div class="ibox-content">
+                    自动缓存清理（慎用）上限就是触发阈值，下限就是保留阈值。<br/>
+                    如70%-85%，意思是缓存到85%就执行删除，删除到70%终止。<br/>
+                    删除期间矿机会异常一会儿的，日志里也会显示。这是正常情况。<br/>
+                </div>
+            </div>
+        </div>
+		<div class="col-lg-6 col-md-8 col-xs-12" id="info_reboot">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    自动重启功能说明
+                </div>
+                <div class="ibox-content">
+                    用空格分隔，格式:时 日 周<br/>
+                    例如"3 * 5"表示每周5的3点重启<br/>
+                    可以使用的通配前缀还有/，周字段无需增加/前缀<br/>
+                    例如"2 /3 *"代表每3天的2点重启。<br/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="display: none;" id="modal-form" class="modal fade" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="row">
+                        <form role="form" method="post" action="/user/pay_submit">
+                            <div class="col-sm-6 b-r"><h3 class="m-t-none m-b">账户点数充值</h3>
+                                <p>请输入您获取到的充值卡信息</p>
+                            </div>
+                            <div class="col-sm-6"><h4>充值信息</h4>
+                                <div>
+                                    <input class="form-control" name="pay_code" placeholder="卡号"></input>
+                                    <input class="form-control" name="pay_key" placeholder="密码"></input>
+                                    <button class="btn btn-sm btn-primary pull-right" style="margin: 1em" type="submit"><strong>充值</strong></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js_logic %}
+    <script src="../static/js/plugins/ionRangeSlider/ion.rangeSlider.min.js"></script>
+    <script>
+        $("#ionrange_cache_limit").ionRangeSlider({
+            min: 50,
+            max: 95,
+            from: {% if user_info.clean_target_limit %}{{user_info.clean_target_limit}}{% else %}70{% endif %},
+            to: {% if user_info.clean_trigger_limit %}{{user_info.clean_trigger_limit}}{% else %}85{% endif %},
+            type: 'double',
+            postfix: "%",
+            step: 0.1,
+            prettify: false,
+            grid: true,
+            disable:{% if user_info.auto_clean_cache_enabled %}true{% else %}false{% endif%},
+            onFinish:function(data){
+                $('#clean_target_limit').val(data.from);
+                $('#clean_trigger_limit').val(data.to);
+            }
+        });
+        $("#ionrange_clean_cache_time").ionRangeSlider({
+            min: 0,
+            max: 24,
+            from: {% if user_info.auto_clean_cache_time_from %}{{user_info.auto_clean_cache_time_from}}{% else %}0{% endif %},
+            to: {% if user_info.auto_clean_cache_time_to %}{{user_info.auto_clean_cache_time_to}}{% else %}24{% endif %},
+            type: 'double',
+            postfix: "点",
+            step: 1,
+            prettify: false,
+            grid: true,
+            onFinish:function(data){
+                $('#auto_clean_cache_time_from').val(data.from);
+                $('#auto_clean_cache_time_to').val(data.to);
+            }
+        });
+        $('.nav-tabs').children('li').each(function(){
+            $(this).click(function(){
+                if($(this).children('a').attr('href')!='#setting'){
+                    $('#info_cache').css('display','none')
+                    $('#info_reboot').css('display','none')
+                }else{
+                    $('#info_cache').css('display','block')
+                    $('#info_reboot').css('display','block')
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block navibar %}
+    <div class="col-lg-10">
+        <h2>我的账户管理</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/">Home</a>
+            </li>
+            <li class="active">
+                <strong>Profile</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% set active_page = "profile" %}

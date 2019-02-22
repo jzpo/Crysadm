@@ -1,0 +1,630 @@
+{% extends "base.html" %}
+{% block content %}
+    <style>
+        a[title='第1页']{
+            display: none;
+        }
+        tfoot>tr>td{
+            text-align: right;
+        }
+        #cs_table_2 tbody tr.evenrow td {
+            background-color: inherit;
+        }
+        .progress{
+            background-color: #f4f4f4;
+        }
+    </style>
+    <div class="row">
+        {% if err_msg %}
+            <div class="col-lg-12">
+                <div class="alert alert-danger alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    {{ err_msg|safe }}
+                </div>
+            </div>
+        {% endif %}
+        {% if info_msg %}
+            <div class="col-lg-12">
+                <div class="alert alert-info alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    {{ info_msg|safe }}
+                </div>
+            </div>
+        {% endif %}
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" style="height:42px;">
+                    今日统计
+                    <a style="margin-left: 5px" class="btn btn-info btn-xs" href="/resend_report">收益报告</a>
+                    {% if accounts|length >0 %}
+                        <div class="btn-group" style="margin-left: 3px;float:right;">
+                            <div style="display: inline-block">
+                                <button aria-expanded="false" data-toggle="dropdown" class="btn btn-info btn-xs dropdown-toggle">
+                                    批量操作<span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <form style="margin:5px 5px 0px 5px" role="form" action="/collect/all" method="post">
+                                            <button type="submit" onclick="javascript:return confirm('确认要收取所有水晶?')" class="btn btn-outline btn-primary btn-block">一键收取</button>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form style="margin:5px 5px 0px 5px" role="form" action="/searcht/all" method="post">
+                                            <button type="submit" onclick="javascript:return confirm('确认要所有账号进攻?')" class="btn btn-outline btn-primary btn-block">一键进攻</button>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form style="margin:5px 5px 0px 5px" role="form" action="/getaward/all" method="post">
+                                            <button type="submit" onclick="javascript:return confirm('确认要所有账号转盘?')" class="btn btn-outline btn-primary btn-block">一键转盘</button>
+                                        </form>
+                                    </li>
+                                    {% if show_drawcash %}
+                                        <li>
+                                            <form style="margin:5px 5px 0px 5px" role="form" action="/drawcash/all" method="post">
+                                                <button type="submit" onclick="javascript:return confirm('确认要所有账号提现?')" class="btn btn-outline btn-primary btn-block">一键提现</button>
+                                            </form>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table id="cs_table_1" class="table table-striped data-table"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" style="height:42px;">
+                    设备信息
+                    <a style="margin-left: 5px" class="btn btn-info btn-xs" href="/excavators_setting">选择列</a>
+                    <div class="btn-group" style="margin-left: 3px;float:right;">
+                        <div style="display: inline-block">
+                            <button aria-expanded="false" data-toggle="dropdown" class="btn btn-info btn-xs dropdown-toggle">
+                                批量操作<span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <form style="margin:5px 5px 0px 5px" role="form" action="/reboot_device_all" method="post">
+                                        <button type="submit" onclick="javascript:return confirm('确认要重启所有矿机?')" class="btn btn-outline btn-danger btn-block">重启矿机</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form style="margin:5px 5px 0px 5px" role="form" action="/upgrade_device_all" method="post">
+                                        <button type="submit" onclick="javascript:return confirm('确认要升级所有矿机?')" class="btn btn-outline btn-danger btn-block">升级矿机</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form style="margin:5px 5px 0px 5px" role="form" action="/enable_upnp_all" method="post">
+                                        <button type="submit" onclick="javascript:return confirm('确认要启用所有矿机UPNP?')" class="btn btn-outline btn-danger btn-block">启用UPNP</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form style="margin:5px 5px 0px 5px" role="form" action="/disable_upnp_all" method="post">
+                                        <button type="submit" onclick="javascript:return confirm('确认要禁用所有矿机UPNP?')" class="btn btn-outline btn-danger btn-block">禁用UPNP</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form style="margin:5px 5px 0px 5px" role="form" action="/start_device_all" method="post">
+                                        <button type="submit" onclick="javascript:return confirm('确认要启动全部设备?')" class="btn btn-outline btn-danger btn-block">开始挖矿</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form style="margin:5px 5px 0px 5px" role="form" action="/stop_device_all" method="post">
+                                        <button type="submit" onclick="javascript:return confirm('确认要暂停全部设备?')" class="btn btn-outline btn-danger btn-block">暂停挖矿</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form style="margin:5px 5px 0px 5px" role="form" action="/umount_disk_all" method="post">
+                                        <button type="submit" onclick="javascript:return confirm('确认要弹出所有的硬盘?')" class="btn btn-outline btn-danger btn-block">弹出硬盘</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table id="cs_table_2" class="table table-striped data-table"></table>
+                    </div>
+                    <!-- /.table-responsive -->
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+    </div>
+{% endblock %}
+
+{% block js_logic %}
+    <script src="../static/js/plugins/jquery-tabledit/jquery.tabledit.js"></script>
+    <script>
+        // Example #3
+        $('table[name="miner_list"]').Tabledit({
+            url: '/set_device_name',
+            eventType: 'dblclick',
+            editButton: false,
+            deleteButton: false,
+            hideIdentifier: true,
+            columns: {
+                identifier: [0, 'url'],
+                editable: [[2, 'name']]
+            },
+            onDraw: function() {
+                console.log('onDraw()');
+            },
+            onSuccess: function(data, textStatus, jqXHR) {
+                console.log('onSuccess(data, textStatus, jqXHR)');
+                console.log(data);
+                console.log(textStatus);
+                console.log(jqXHR);
+            },
+            onFail: function(jqXHR, textStatus, errorThrown) {
+                console.log('onFail(jqXHR, textStatus, errorThrown)');
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            },
+            onAlways: function() {
+                console.log('onAlways()');
+            },
+            onAjax: function(action, serialize) {
+                console.log('onAjax(action, serialize)');
+                console.log(action);
+                console.log(serialize);
+            }
+        });
+
+    </script>
+    <script type="text/javascript">
+        $(function(){
+            var userOptions = {
+                "id":"cs_table_1",                                //必须 表格id
+                "head":["手机号","账户名","水晶产量","秘银产量","秘银存量","宝箱","未收取","今日收益","余额","总收入","更新时间","操作"],   //必须 thead表头
+                "key":["phone","display_name","pdc","td_s","s","td_box_pdc","td_not_in_a","td_c","r_can_use","r_h_a","updated_time","operation"],   //必须 thead表头映射
+                "styles":["min-width:8em;{%if 'phone' not in rows_today_info%}display:none{% endif %}'  class='col-md-1",
+                          "{%if 'display_name' not in rows_today_info%}display:none{% endif %}' class='col-md-1",
+                          "{%if 'pdc' not in rows_today_info%}display:none{% endif %}' class='col-md-1",
+                          "{%if 'td_s' not in rows_today_info%}display:none{% endif %}' class='col-md-1",
+                          "{%if 's' not in rows_today_info%}display:none{% endif %}' class='col-md-1",
+                          "{%if 'td_box_pdc' not in rows_today_info%}display:none{% endif %}' class='col-md-1",
+                          "{%if 'td_not_in_a' not in rows_today_info%}display:none{% endif %}' class='col-md-1",
+                          "{%if 'td_c' not in rows_today_info%}display:none{% endif %}' class='col-md-1",
+                          "{%if 'r_can_use' not in rows_today_info%}display:none{% endif %}' class='col-md-1",
+                          "{%if 'r_h_a' not in rows_today_info%}display:none{% endif %}' class='col-md-1",
+                          "{%if 'updated_time' not in rows_today_info%}display:none{% endif %}' class='col-md-2 col-xs-1",
+                          "text-align:right;min-width:170px' class='col-md-1"],   //必须样式配置
+                "body":{{accounts | safe}},                     //必须 tbody 后台返回的数据展示
+                "foot":true,                                    // true/false  是否显示tfoot --- 默认false
+                "displayNum": 1000,                               //必须   默认 10  每页显示行数
+                "groupDataNum":1,                             //可选    默认 7  组数
+                "foreAndAft":false,                           //分页-是否显示首页、尾页
+                "pageNumTip":false,                           //分页-是否显示当前页/总页码
+                "clickEventCallBack":function(data_index,tr_index){ //可选 给tbody tr绑定事件回调
+                    console.log("tr_index: "+tr_index+" data_index: "+data_index);
+                },
+                'sortContent':[                               //排序-参数（表头索引从0开始）
+                    {
+                        index:0,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.phone;
+                            var b=b.phone;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:1,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.display_name;
+                            var b=b.display_name;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:2,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.pdc;
+                            var b=b.pdc;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:3,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.td_s;
+                            var b=b.td_s;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:4,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.s;
+                            var b=b.s;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:5,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.td_box_pdc;
+                            var b=b.td_box_pdc;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:6,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.td_not_in_a;
+                            var b=b.td_not_in_a;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:7,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.td_c;
+                            var b=b.td_c;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:8,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=parseFloat(a.r_can_use);
+                            var b=parseFloat(b.r_can_use);
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:9,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=parseFloat(a.r_h_a);
+                            var b=parseFloat(b.r_h_a);
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:10,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.updated_time;
+                            var b=b.updated_time;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    }
+                ],
+                sort:true,                                    // 点击表头是否排序 true/false  --- 默认false
+                search:true,                                  // 默认为false 没有搜索
+                lang:{
+                    gopageButtonSearchText:"搜索"
+                }
+            }
+            var cs = new KingTable(null,userOptions);
+            var userOptions = {
+                "id":"cs_table_2",                                //必须 表格id
+                "head":["手机号","矿主ID","矿机名","类型","固件版本","<i class='fa fa-arrow-circle-up'></i> (KB/s)","<i class='fa fa-arrow-circle-down'></i> (KB/s)","<i class='fa fa-hdd-o'></i> (GB)","状态","UPNP","内网IP","公网IP","ROOT密码","操作"],   //必须 thead表头
+                "key":["phone","mid","device_name","hardware_model","system_version","upload_speed","download_speed","space_used","status","dcdn_upnp_message","lan_ip","ip","password","operation"],   //必须 thead表头映射
+                "styles":["min-width:8em;{%if 'phone' not in rows_info%}display:none{% endif %}' class='col-md-1",
+                          "min-width:60px;{%if 'mid' not in rows_info%}display:none{% endif %}' class='col-md-1",
+                          "min-width:60px;{%if 'device_name' not in rows_info%}display:none{% endif %}' class='col-md-1",
+                          "min-width:50px;{%if 'hardware_model' not in rows_info%}display:none{% endif %}' class='col-md-1",
+                          "min-width:70px;{%if 'system_version' not in rows_info%}display:none{% endif %}' class='col-md-1",
+                          "min-width:70px;{%if 'dcdn_upload_speed' not in rows_info%}display:none{% endif %}' class='col-md-1",
+                          "min-width:70px;{%if 'dcdn_download_speed' not in rows_info%}display:none{% endif %}' class='col-md-1",
+                          "min-width:120px;{%if 'space_used' not in rows_info%}display:none{% endif %}' class='col-md-1",
+                          "min-width:50px;{%if 'status' not in rows_info%}display:none{% endif %}' class='col-md-1",
+                          "min-width:110px;{%if 'dcdn_upnp_message' not in rows_info%}display:none{% endif %}' class='col-md-1",
+                          "min-width:110px;{%if 'lan_ip' not in rows_info%}display:none{% endif %}' class='col-md-1",
+                          "min-width:110px;{%if 'ip' not in rows_info%}display:none{% endif %}' class='col-md-1",
+                          "min-width:90px;{%if 'password' not in rows_info%}display:none{% endif %}' class='col-md-1",
+                          "min-width:100px' class='col-md-1"],   //必须样式配置
+                "body":{{devices | safe}},                     //必须 tbody 后台返回的数据展示
+                "foot":true,                                    // true/false  是否显示tfoot --- 默认false
+                "displayNum": 1000,                               //必须   默认 10  每页显示行数
+                "groupDataNum":1,                             //可选    默认 7  组数
+                "foreAndAft":false,                           //分页-是否显示首页、尾页
+                "pageNumTip":false,                           //分页-是否显示当前页/总页码
+                "clickEventCallBack":function(data_index,tr_index){ //可选 给tbody tr绑定事件回调
+                    console.log("tr_index: "+tr_index+" data_index: "+data_index);
+                },
+                'sortContent':[                               //排序-参数（表头索引从0开始）
+                    {
+                        index:0,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.phone;
+                            var b=b.phone;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:1,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.mid;
+                            var b=b.mid;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:2,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.device_name;
+                            var b=b.device_name;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:3,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.hardware_model;
+                            var b=b.hardware_model;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:4,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.system_version;
+                            var b=b.system_version;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:5,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=parseFloat(a.upload_speed);
+                            var b=parseFloat(b.upload_speed);
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:6,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=parseFloat(a.download_speed);
+                            var b=parseFloat(b.download_speed);
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:7,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.space_used.replace(/.*width: (.*)%.*/g,"$1");
+                            var b=b.space_used.replace(/.*width: (.*)%.*/g,"$1");
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:8,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.status;
+                            var b=b.status;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:9,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.dcdn_upnp_message;
+                            var b=b.dcdn_upnp_message;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:10,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.lan_ip;
+                            var b=b.lan_ip;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:11,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.ip;
+                            var b=b.ip;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:12,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.password;
+                            var b=b.password;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    }
+                ],
+                sort:true,                                    // 点击表头是否排序 true/false  --- 默认false
+                search:true,                                  // 默认为false 没有搜索
+                lang:{
+                    gopageButtonSearchText:"搜索"
+                }
+            }
+            var cs = new KingTable(null,userOptions);
+            $('#cs_table_1').find('th').click(function(){
+                if($(this).hasClass('asc'))
+                    $.cookie('today_sort_by', 'asc' + $(this).html(), { expires: 365});
+                else
+                    $.cookie('today_sort_by', 'desc' + $(this).html(), { expires: 365});                
+            });
+            $('#cs_table_2').find('th').click(function(){
+                if($(this).hasClass('asc'))
+                    $.cookie('device_sort_by', 'asc' + $(this).html(), { expires: 365});
+                else
+                    $.cookie('device_sort_by', 'desc' + $(this).html(), { expires: 365});                
+            });
+            var sort=$.cookie('today_sort_by');
+            if(sort!=null){
+                if(sort.indexOf('asc') == 0){
+                    sort=sort.substring(3);
+                    $('#cs_table_1').find('th:contains("' + sort + '")').trigger("click");
+                }else{
+                    sort=sort.substring(4);
+                    $('#cs_table_1').find('th:contains("' + sort + '")').trigger("click");                    
+                    $('#cs_table_1').find('th:contains("' + sort + '")').trigger("click");
+                }
+            }
+            else
+            {
+                $('#cs_table_1').find('th:contains("手机号")').trigger("click");
+            }
+            sort=$.cookie('device_sort_by');
+            if(sort!=null){
+                if(sort.indexOf('asc') == 0){
+                    sort=sort.substring(3);
+                    $('#cs_table_2').find('th:contains("' + sort + '")').trigger("click");
+                }else{
+                    sort=sort.substring(4);
+                    $('#cs_table_2').find('th:contains("' + sort + '")').trigger("click");                    
+                    $('#cs_table_2').find('th:contains("' + sort + '")').trigger("click");
+                }
+            }
+            else
+            {
+                $('#cs_table_2').find('th:contains("手机号")').trigger("click");
+            }
+        })
+    </script>
+{% endblock%}
+
+{% block navibar %}
+    <div class="col-lg-10">
+        <h2>我的矿机（ROOT权限开放，有需要请自行点击计算）</h2>
+        <h4>PS：迅雷现在在线修改root密码，监工显示的root密码目前只针对部分宝断网恢复出厂可用，一旦联网即失效。</h4>
+       <ol class="breadcrumb">
+            <li>
+                <a href="/">Home</a>
+            </li>
+            <li class="active">
+                <strong>Excavators</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% set active_page = "excavators" %}

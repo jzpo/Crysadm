@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <div class="row">
+        {% if err_msg %}
+            <div class="col-lg-12">
+                <div class="alert alert-danger alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    {{ err_msg }}
+                </div>
+            </div>
+        {% endif %}
+        {% if info_msg %}
+            <div class="col-lg-12">
+                <div class="alert alert-info alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    {{ info_msg }}
+                </div>
+            </div>
+        {% endif %}
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" style="height:42px;">
+                    数据库调整
+                </div>
+                <div class="ibox-content">
+                    <table class='table' style='width: 28em'>
+                        <tr>
+                            <td>
+                                <form role="form" action="/database/clear_all_points" method="post">
+                                    <button type="submit" onclick="javascript:return confirm('确认要清空所有用户的点数配置？仅用于升级新版，请确认所有账户的过期时间配置正常')" class="btn btn-default">清除全部账户点数</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form role="form" action="/database/set_all_points" method="post">
+                                    <button type="submit" onclick="javascript:return confirm('确认要根据过期时间自动配置所有用户的剩余点数？仅用于升级新版，请确认所有账户的过期时间配置正常')" class="btn btn-default">配置全部账户点数</button>
+                                </form>                                
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <form role="form" action="/database/set_account_limit" method="post">
+                                    <button type="submit" onclick="javascript:return confirm('确认要配置所有账户的最大限制数量到当前消费峰值？')" class="btn btn-default">配置账户数量限制</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form role="form" action="/database/clear_account_limit" method="post">
+                                    <button type="submit" onclick="javascript:return confirm('确认要清除所有账户的最大数量限制？')" class="btn btn-default">清除账户数量限制</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" style="height:42px;">
+                    UBUS
+                </div>
+                <div class="ibox-content">
+                    <form role="form" action="/debug_ubus" method="post">
+                        <div class="form-group input-group">
+                            <span class="input-group-addon"><i style="width: 16px;" class="fa fa-wrench"></i></span>
+                            <input type="text" class="form-control" name="session_id" value="{{ ubus_params.session_id }}" placeholder="Session ID">
+                        </div>
+                        <div class="form-group input-group">
+                            <span class="input-group-addon"><i style="width: 16px;" class="fa fa-wrench"></i></span>
+                            <input type="text" class="form-control" name="account_id" value="{{ ubus_params.account_id }}" placeholder="Account ID">
+                        </div>
+                        <div class="form-group input-group">
+                            <span class="input-group-addon"><i style="width: 16px;" class="fa fa-wrench"></i></span>
+                            <input type="text" class="form-control" name="command" value="{{ ubus_params.command }}" placeholder="Command">
+                        </div>
+                        <div class="form-group input-group">
+                            <span class="input-group-addon"><i style="width: 16px;" class="fa fa-wrench"></i></span>
+                            <input type="text" class="form-control" name="action" value="{{ ubus_params.action }}" placeholder="Action">
+                        </div>
+                        <div class="form-group input-group">
+                            <span class="input-group-addon"><i style="width: 16px;" class="fa fa-wrench"></i></span>
+                            <input type="text" class="form-control" name="params" value="{{ ubus_params.params }}" placeholder="Parameters">
+                        </div>
+                        <div class="form-group input-group">
+                            <span class="input-group-addon"><i style="width: 16px;" class="fa fa-wrench"></i></span>
+                            <input type="text" class="form-control" name="extra_url" value="{{ ubus_params.extra_url }}" placeholder="URL Params">
+                        </div>
+                        <button type="submit" class="btn btn-default">提交</button>
+                        <button type="reset" class="btn btn-default">重置</button>
+                    </form>
+                </div>
+            </div>
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" style="height:42px;">
+                    API
+                </div>
+                <div class="ibox-content">
+                    <form role="form" action="/debug_api" method="post">
+                        <div class="form-group input-group">
+                            <span class="input-group-addon"><i style="width: 16px;" class="fa fa-wrench"></i></span>
+                            <input type="text" class="form-control" name="session_id" value="{{ api_params.session_id }}" placeholder="Session ID">
+                        </div>
+                        <div class="form-group input-group">
+                            <span class="input-group-addon"><i style="width: 16px;" class="fa fa-wrench"></i></span>
+                            <input type="text" class="form-control" name="account_id" value="{{ api_params.account_id }}" placeholder="Account ID">
+                        </div>
+                        <div class="form-group input-group">
+                            <span class="input-group-addon"><i style="width: 16px;" class="fa fa-wrench"></i></span>
+                            <input type="text" class="form-control" name="url" value="{{ api_params.url }}" placeholder="URL">
+                        </div>
+                        <div class="form-group input-group">
+                            <span class="input-group-addon"><i style="width: 16px;" class="fa fa-wrench"></i></span>
+                            <input type="text" class="form-control" name="method" value="{{ api_params.method }}" placeholder="Method">
+                        </div>
+                        <div class="form-group input-group">
+                            <span class="input-group-addon"><i style="width: 16px;" class="fa fa-wrench"></i></span>
+                            <input type="text" class="form-control" name="params" value="{{ api_params.params }}" placeholder="Parameters">
+                        </div>
+                        <button type="submit" class="btn btn-default">提交</button>
+                        <button type="reset" class="btn btn-default">重置</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block navibar %}
+    <div class="col-lg-10">
+        <h2>系统调试</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/">Home</a>
+            </li>
+            <li class="active">
+                <strong>Debug</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% set active_page = "debug" %}

@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+{% block content %}
+    <style>
+        a[title='第1页']{
+            visibility: hidden
+        }
+    </style>
+    <div class="row">
+        {% if err_msg %}
+            <div class="col-lg-12">
+                <div class="alert alert-danger alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    {{ err_msg|safe }}
+                </div>
+            </div>
+        {% endif %}
+        {% if info_msg %}
+            <div class="col-lg-12">
+                <div class="alert alert-info alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    {{ info_msg|safe }}
+                </div>
+            </div>
+        {% endif %}
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    系统用户列表
+                    <a style="margin-left: 5px" class="btn btn-info btn-xs" href="/admin/add_user">添加</a>
+                    <form role="form" style="float:right;margin-right: 5px;margin-top: -3px;" action="/admin/del_filter" method="post">
+                        <input name="selection" autocomplete="off" type="hidden" value='{% for row in users %}{{ row.username|e }} {% endfor %}'>
+                        <button type="submit" onclick="javascript:return confirm('删除当前筛选到的账户？')" class="btn btn-info btn-xs">删除筛选</button>
+                    </form>
+                    <form role="form" style="float:right;margin-right: 5px;margin-top: -3px;" action="/admin/user_list_filter" method="post">
+                        <input style='visibility: hidden' name="user_list_filter" autocomplete="off" type="hidden" value='未启用矿机'>
+                        <button type="submit" class="btn btn-info btn-xs">未启用</button>
+                    </form>
+                    <form role="form" style="float:right;margin-right: 5px;margin-top: -3px;" action="/admin/user_list_filter" method="post">
+                        <input style='visibility: hidden' name="user_list_filter" autocomplete="off" type="hidden" value='无矿机'>
+                        <button type="submit" class="btn btn-info btn-xs">无矿机</button>
+                    </form>
+                    <div style="-moz-user-select:-moz-none;float:right;margin-right: 5px;margin-top: -3px;" onselectstart="return false;"> 
+                        <a href='javascript:void(0);' disabled=true title='多个搜索词组合用空格分隔，可用关键字：在线、离线、禁用、启用、快过期、已过期、新用户、老用户、无矿机、未启用矿机，其它字样均作为普通搜索词'><small>?</small></a>
+                    </div>
+                    <form role="form"  style="float:right;margin-top: -3px;" action="/admin/user_list_filter" method="post">
+                        <input class='inline_form_input' style='width: 10em' placeholder="关键字" name="user_list_filter" autocomplete="off" type="text" value='{{ user_filter }}' onchange="this.form.submit();">
+                    </form>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="ibox-content">
+                    <div class="table-responsive table-bordered">
+                        <table id="cs_table" class="table table-hover data-table"></table>
+                    </div>
+                    <!-- /.table-responsive -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block js_logic %}
+    <script type="text/javascript">
+        $(function(){
+            var userOptions = {
+                "id":"cs_table",                                //必须 表格id
+                "head":["用户名","邮箱","创建时间","过期时间","登陆时间","管理权限","启用","最大账户","状态","采集器","操作"],   //必须 thead表头
+                "key":["username","email","created_time","expire_date","login_time","is_admin","active","max_account_no","is_online","collector","operation"],   //必须 thead表头映射
+                "styles":["",
+                          "",
+                          "' class='hidden-xs",
+                          "",
+                          "' class='hidden-xs",
+                          "",
+                          "",
+                          "' class='hidden-xs",
+                          "' class='hidden-xs",
+                          "",
+                          "min-width: 110px"],   //必须样式配置
+                "body":{{users | safe}},                     //必须 tbody 后台返回的数据展示
+                "foot":true,                                    // true/false  是否显示tfoot --- 默认false
+                "displayNum": 1000,                               //必须   默认 10  每页显示行数
+                "groupDataNum":1,                             //可选    默认 7  组数
+                "foreAndAft":false,                           //分页-是否显示首页、尾页
+                "pageNumTip":false,                           //分页-是否显示当前页/总页码
+                "clickEventCallBack":function(data_index,tr_index){ //可选 给tbody tr绑定事件回调
+                    console.log("tr_index: "+tr_index+" data_index: "+data_index);
+                },
+                'sortContent':[                               //排序-参数（表头索引从0开始）
+                    {
+                        index:0,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.username;
+                            var b=b.username;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:1,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.email;
+                            var b=b.email;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:2,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.created_time;
+                            var b=b.created_time;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:3,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.expire_date;
+                            var b=b.expire_date;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:4,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.login_time;
+                            var b=b.login_time;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:5,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.is_admin;
+                            var b=b.is_admin;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:6,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.active;
+                            var b=b.active;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:7,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.max_account_no;
+                            var b=b.max_account_no;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:8,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.is_online;
+                            var b=b.is_online;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:9,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.collector;
+                            var b=b.collector;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    }
+                ],
+                sort:true,                                    // 点击表头是否排序 true/false  --- 默认false
+                search:true,                                  // 默认为false 没有搜索
+                lang:{
+                    gopageButtonSearchText:"搜索"
+                }
+            }
+            var cs = new KingTable(null,userOptions);
+            $('th:contains("用户名")').trigger("click");
+        })
+    </script>
+{% endblock %}
+{% block navibar %}
+    <div class="col-lg-10">
+        <h2>用户管理</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/">Home</a>
+            </li>
+            <li>
+                Admin
+            </li>
+            <li class="active">
+                <strong>User</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% set active_page = "admin_user" %}

@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    参数配置
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs">
+                        <li class="{% if action is none or action == 'auto_task' %} active{% endif %}"><a href="#auto_task" data-toggle="tab" aria-expanded="false">自动</a></li>
+                        <li class="{% if action and action == 'info' %} active{% endif %}"><a href="#info" data-toggle="tab" aria-expanded="false">账户</a></li>
+                        <li class="{% if action and action == 'plugin' %} active{% endif %}"><a href="#plugin" data-toggle="tab" aria-expanded="false">插件</a></li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div class="tab-pane fade {% if action is none or action == 'auto_task' %}active in{% endif %}" id="auto_task">
+                            <br />
+                            {% if err_msg and (action == 'auto_task') %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                    {{ err_msg }}
+                                </div>
+                            {% endif %}
+                            <form role="form" action="/admin/change_property/collect_crystal_interval/1/system" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-clock-o"></i></span>
+                                    <input class="form-control" name="collect_crystal_interval" value="{{user_info.collect_crystal_interval|safe}}" placeholder="水晶收取时间间隔(单位：秒)" type='text'>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        <button type="submit" class="btn btn-info" style="text-align:left; width: 180px;">设置水晶收取时间(秒)</button>
+                                    </span>
+                                </div>
+                            </form>
+                            <form role="form" action="/admin/change_property/drawcash_crystal_interval/1/system" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-clock-o"></i></span>
+                                    <input class="form-control" name="drawcash_crystal_interval" value="{{user_info.drawcash_crystal_interval|safe}}" placeholder="自动提现时间间隔(单位：秒)" type='text'>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        <button type="submit" class="btn btn-info" style="text-align:left; width: 180px;">设置自动提现时间(秒)</button>
+                                    </span>
+                                </div>
+                            </form>
+                            <form role="form" action="/admin/change_property/giftbox_crystal_interval/1/system" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-clock-o"></i></span>
+                                    <input class="form-control" name="giftbox_crystal_interval" value="{{user_info.giftbox_crystal_interval|safe}}" placeholder="免费宝箱时间间隔(单位：秒)" type='text'>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        <button type="submit" class="btn btn-info" style="text-align:left; width: 180px;">设置自动宝箱时间(秒)</button>
+                                    </span>
+                                </div>
+                            </form>
+                            <form role="form" action="/admin/change_property/searcht_crystal_interval/1/system" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-clock-o"></i></span>
+                                    <input class="form-control" name="searcht_crystal_interval" value="{{user_info.searcht_crystal_interval|safe}}" placeholder="秘银进攻时间间隔(单位：秒)" type='text'>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        <button type="submit" class="btn btn-info" style="text-align:left; width: 180px;">设置自动进攻时间(秒)</button>
+                                    </span>
+                                </div>
+                            </form>
+                            <form role="form" action="/admin/change_property/revenge_crystal_interval/1/system" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-clock-o"></i></span>
+                                    <input class="form-control" name="revenge_crystal_interval" value="{{user_info.revenge_crystal_interval|safe}}" placeholder="秘银复仇时间间隔(单位：秒)" type='text'>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        <button type="submit" class="btn btn-info" style="text-align:left; width: 180px;">设置自动复仇时间(秒)</button>
+                                    </span>
+                                </div>
+                            </form>
+                            <form role="form" action="/admin/change_property/getaward_crystal_interval/1/system" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-clock-o"></i></span>
+                                    <input class="form-control" name="getaward_crystal_interval" value="{{user_info.getaward_crystal_interval|safe}}" placeholder="自动转盘时间间隔(单位：秒)" type='text'>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        <button type="submit" class="btn btn-info" style="text-align:left; width: 180px;">设置自动转盘时间(秒)</button>
+                                    </span>
+                                </div>
+                            </form>
+                            <form role="form" action="/admin/change_property/auto_detect_interval/1/system" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-clock-o"></i></span>
+                                    <input class="form-control" name="auto_detect_interval" value="{{user_info.auto_detect_interval|safe}}" placeholder="自动监测时间间隔(单位：秒)" type='text'>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        <button type="submit" class="btn btn-info" style="text-align:left; width: 180px;">设置自动监测时间(秒)</button>
+                                    </span>
+                                </div>
+                            </form>
+                            <form role="form" action="/admin/change_property/get_online_user_data_interval/1/system" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-clock-o"></i></span>
+                                    <input class="form-control" name="get_online_user_data_interval" value="{{user_info.get_online_user_data_interval|safe}}" placeholder="刷新在线用户数据时间间隔(单位：秒)" type='text'>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        <button type="submit" class="btn btn-info" style="text-align:left; width: 180px;">设置在线用户刷新时间(秒)</button>
+                                    </span>
+                                </div>
+                            </form>
+                            <form role="form" action="/admin/change_property/get_offline_user_data_interval/1/system" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-clock-o"></i></span>
+                                    <input class="form-control" name="get_offline_user_data_interval" value="{{user_info.get_offline_user_data_interval|safe}}" placeholder="刷新离线用户数据时间间隔(单位：秒)" type='text'>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        <button type="submit" class="btn btn-info" style="text-align:left; width: 180px;">设置离线用户刷新时间(秒)</button>
+                                    </span>
+                                </div>
+                            </form>
+                            <form role="form" action="/admin/change_property/clear_offline_user_interval/1/system" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-clock-o"></i></span>
+                                    <input class="form-control" name="clear_offline_user_interval" value="{{user_info.clear_offline_user_interval|safe}}" placeholder="清除在线用户时间间隔(单位：秒)" type='text'>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        <button type="submit" class="btn btn-info" style="text-align:left; width: 180px;">设置在线列表刷新时间(秒)</button>
+                                    </span>
+                                </div>
+                            </form>
+                            <form role="form" action="/admin/change_property/select_auto_task_user_interval/1/system" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-clock-o"></i></span>
+                                    <input class="form-control" name="select_auto_task_user_interval" value="{{user_info.select_auto_task_user_interval|safe}}" placeholder="选择自动用户任务时间间隔(单位：秒)" type='text'>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        <button type="submit" class="btn btn-info" style="text-align:left; width: 180px;">设置自动任务选择时间(秒)</button>
+                                    </span>
+                                </div>
+                            </form>
+                            <form role="form" action="/admin/change_property/mail_send_interval/1/system" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-clock-o"></i></span>
+                                    <input class="form-control" name="mail_send_interval" value="{{user_info.mail_send_interval|safe}}" placeholder="邮件发送时间间隔(单位：秒)" type='text'>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        <button type="submit" class="btn btn-info" style="text-align:left; width: 180px;">设置邮件发送时间间隔(秒)</button>
+                                    </span>
+                                </div>
+                            </form>
+                            <form style="margin-left: 3px;float:right;" role="form" action="/admin/restart_auto_task" method="post">
+                                <button type="submit" style="margin: 0px;" onclick="javascript:return confirm('确认要重启所有自动任务?')" class="btn btn-danger">重启所有自动任务</button>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade{% if action == 'info' %} active in{% endif %}" id="info">
+                            <br />
+                            {% if err_msg and (action == 'info') %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                    {{ err_msg }}
+                                </div>
+                            {% endif %}
+                            <form role="form" action="/admin/change_property/trial_period/1/system" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-cubes"></i></span>
+                                    <input class="form-control" name="trial_period" value="{{user_info.trial_period|safe}}" placeholder="新用户赠送点数" type='text'>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        <button type="submit" class="btn btn-info" style="text-align:left; width: 180px;">设置新用户赠送点数</button>
+                                    </span>
+                                </div>
+                            </form>
+                            <form role="form" action="/admin/change_property/feedback_user/1/system" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-comments"></i></span>
+                                    <input class="form-control" name="feedback_user" value="{{user_info.feedback_user|safe}}" placeholder="工单处理账户，用于接收用户的工单信息" type='text'>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        <button type="submit" class="btn btn-info" style="text-align:left; width: 180px;">设置工单处理账户</button>
+                                    </span>
+                                </div>
+                            </form>
+                            <form role="form" action="/admin/change_property/master_mail_smtp/1/system" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-envelope-o"></i></span>
+                                    <input class="form-control" name="master_mail_smtp" value="{{user_info.master_mail_smtp|safe}}" placeholder="提醒邮件SMTP服务器地址" type='text'>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        <button type="submit" class="btn btn-info" style="text-align:left; width: 180px;">设置SMTP服务器地址</button>
+                                    </span>
+                                </div>
+                            </form>
+                            <form role="form" action="/admin/change_property/master_mail_address/1/system" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-at"></i></span>
+                                    <input class="form-control" name="master_mail_address" value="{{user_info.master_mail_address|safe}}" placeholder="提醒邮件发送地址" type='text'>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        <button type="submit" class="btn btn-info" style="text-align:left; width: 180px;">设置邮件发送地址</button>
+                                    </span>
+                                </div>
+                            </form>
+                            <form role="form" action="/admin/change_property/master_mail_password/1/system" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i style="width: 16px;" class="fa fa-lock"></i></span>
+                                    <input class="form-control" name="master_mail_password" value="{{user_info.master_mail_password|safe}}" placeholder="SMTP授权码(不是邮箱密码)" type='text'>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        <button type="submit" class="btn btn-info" style="text-align:left; width: 180px;">设置SMTP授权码</button>
+                                    </span>
+                                </div>
+                            </form>
+                            <form role="form" action="/admin/change_property/master_mail_usetls/{% if user_info.master_mail_usetls == 2 %}0{% elif user_info.master_mail_usetls == 0 %}1{% else %}2{% endif %}/system" method="post">
+                                <div class="form-group input-group">
+                                     <span class="input-group-addon"><i style="width: 16px;" class="fa fa-lock"></i>
+                                                </span>
+                                    <input class="form-control" value="{% if user_info.master_mail_usetls == 2%}2 -（当前使用465端口的安全连接，将加密发送邮件）{% elif user_info.master_mail_usetls == 1%}1 -（当前使用25端口的安全连接，将加密发送邮件）{% else %}0 - （当前不使用TLS安全连接，将使用明文发送邮件）{% endif %}" disabled>
+                                    
+                                        <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        {% if user_info.master_mail_usetls == 2 %}
+                                            <button type="submit" class="btn btn-danger" style="text-align:left; width: 160px;">使用25端口明文连接</button>
+                                        {% elif user_info.master_mail_usetls == 1 %}
+                                            <button type="submit" class="btn btn-warning" style="text-align:left; width: 160px;">使用465端口安全连接</button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-success" style="text-align:left; width: 160px;">使用25端口安全连接</button>
+                                        {% endif %}
+                                        </span>
+                                    
+                                </div>
+                            </form>
+                            <form role="form" action="/admin/test_email" method="post">
+                                <div class="form-group input-group">
+                                     <span class="input-group-addon"><i style="width: 16px;" class="fa fa-wrench"></i></span>
+                                    <input class="form-control" value="发送一个测试邮件到您的提醒邮件地址，以测试邮件设置是否正常" disabled>
+
+                                        <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        <button type="submit" class="btn btn-success" style="text-align:left; width: 140px;">发送测试邮件</button>
+                                        </span>
+
+                                </div>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade{% if action == 'plugin' %} active in{% endif %}" id="plugin">
+                            <br />
+                            {% if err_msg and (action == 'plugin') %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                    {{ err_msg }}
+                                </div>
+                            {% endif %}
+                            <form role="form" action="/admin/change_property/plugin_comments/1/system" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><span style="width: 73px; display: inline-block;">用户交流</span></span>
+                                    <textarea class="form-control message-input" name="code" placeholder="插件代码">{{user_info.plugin_comments|safe}}</textarea>
+                                    <span class="input-group-addon"><button type="submit" class="btn btn-default btn-sm">提交</button></span>
+                                </div>
+                            </form>
+                            <form role="form" action="/admin/change_property/plugin_statistics/1/system" method="post">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><span style="width: 73px; display: inline-block;">站长统计</span></span>
+                                    <textarea class="form-control message-input" name="code" placeholder="插件代码">{{user_info.plugin_statistics|safe}}</textarea>
+                                    <span class="input-group-addon"><button type="submit" class="btn btn-default btn-sm">提交</button></span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+{% endblock %}
+
+{% block navibar %}
+    <div class="col-lg-10">
+        <h2>参数配置</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/">Admin</a>
+            </li>
+            <li class="active">
+                <strong>Setting</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% set active_page = "admin_settings" %}

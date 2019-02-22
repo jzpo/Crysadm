@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="Description" content="迅雷赚钱宝集中管理、云监控平台">
+    <meta name="Keywords" content="Crysadm,Crysadm+,云监工,赚钱宝">
+    <title>Crysadm+ 智能云监工 | Login</title>
+
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <link href="../static/css/animate.css" rel="stylesheet">
+    <link href="../static/css/style.css" rel="stylesheet">
+
+    <style>
+         @media (max-width: 640px) {
+
+            .loginColumns{
+                padding-top: 0px;
+            }
+
+        }
+	   .col-md-12>span>a{
+		color: #676a6c;
+	   }
+    </style>
+</head>
+
+<body class="gray-bg">
+
+    <div class="loginColumns animated fadeInDown">
+        <div class="row">
+
+            <div class="col-md-6">
+                <h2 class="font-bold">欢迎来到 Crysadm+</h2>
+
+                <p>
+                    提供最优美的界面.
+                </p>
+
+                <p>
+                    提供最方便的监控方式.
+                </p>
+
+                <p>
+                    我是赚钱宝云端监控大师.
+                </p>
+                    <small></small>
+                </p>
+
+            </div>
+            <div class="col-md-6">
+                <div class="ibox-content">
+                    {% if err_msg %}
+                        <div class="alert alert-danger alert-dismissable">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                {{ err_msg }}
+                        </div>
+                    {% endif %}
+                    <form class="m-t" role="form" action="/user/login" method="post">
+                        <div class="form-group">
+                            <input type="text" name="username" class="form-control" placeholder="用户名" required="">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" name="password" class="form-control" placeholder="密码" required="">
+                        </div>
+                        <button type="submit" class="btn btn-primary block full-width m-b">登陆</button>
+<!--
+                        <a href="#">
+                            <small>Forgot password?</small>
+                        </a>
+-->
+                        <p class="text-muted text-center">
+                            <small>没有账号?</small>
+                        </p>
+                        <a class="btn btn-sm btn-white btn-block" href="/invitations">注册一个吧</a>
+                    </form>
+                    <p class="m-t text-center">
+                        <small>                <span style="margin-right:10px;">本站用户数：{{ accounts_count.users }}</span>
+                <span style="margin-right:10px;">迅雷账号数：{{ accounts_count.accounts }}</span>
+                <span>矿机数：{{ accounts_count.accountsk }}</span></small>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <div class="row">
+            <div class="col-md-6">
+                Copyright powergx & jzpo
+               <small>© 2016-2019</small>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                {{statistics_code|safe}}
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

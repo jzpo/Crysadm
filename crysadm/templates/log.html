@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" style="height:42px;">
+                    <div class="ibox-tools" style="height:45px;float:left;">
+                        <font style="float:left;">筛选：</font>
+                        <a href="?time=1day" class="btn btn-success btn-xs" style="margin-left:1px;float:left;"><font color="#FFFFFF">1天</font></a>
+                        <a href="?time=3day" class="btn btn-success btn-xs" style="margin-left:1px;float:left;"><font color="#FFFFFF">3天</font></a>
+                        <a href="?time=7day" class="btn btn-success btn-xs" style="margin-left:1px;float:left;"><font color="#FFFFFF">7天</font></a>
+                        <a href="?time=important" class="btn btn-success btn-xs" style="margin-left:1px;float:left;"><font color="#FFFFFF">重要</font></a>
+                        <a href="?time=all" class="btn btn-info btn-xs" style="margin-left:3px;float:left;"><font color="#FFFFFF">全部</font></a>
+                    </div>
+                    {% if log_user|length >0 %}
+                        <form role="form" style="margin-left: 3px;float:right;" action="/log/delete">
+                            <button type="submit" style="margin: 0px;" onclick="javascript:return confirm('确认要清空所有记录?')" class="btn btn-danger btn-xs">清空</button>
+                        </form>
+                        <form role="form" style="margin-left: 3px;float:right;" action="/log/delete_sel">
+                            <button type="submit" style="margin: 0px;" onclick="javascript:return confirm('确认要清空当前筛选到的记录?')" class="btn btn-info btn-xs">删除筛选</button>
+                        </form>
+                    {% endif %}
+                </div>
+                <div class="ibox-title" style="height:45px;">
+                    <font style="float:left;">分类：</font>
+                    <a href="?type=1" class="btn btn-warning btn-xs" style="margin-left:1px;float:left;"><font color="#FFFFFF">收取</font></a>
+                    <a href="?type=2" class="btn btn-warning btn-xs" style="margin-left:1px;float:left;"><font color="#FFFFFF">宝箱</font></a>
+                    <a href="?type=3" class="btn btn-warning btn-xs" style="margin-left:1px;float:left;"><font color="#FFFFFF">转盘</font></a>
+                    <a href="?type=4" class="btn btn-warning btn-xs" style="margin-left:1px;float:left;"><font color="#FFFFFF">进攻</font></a>
+                    <a href="?type=5" class="btn btn-warning btn-xs" style="margin-left:1px;float:left;"><font color="#FFFFFF">复仇</font></a>
+                    <a href="?type=6" class="btn btn-warning btn-xs" style="margin-left:1px;float:left;"><font color="#FFFFFF">提现</font></a>
+                    <a href="?type=7" class="btn btn-warning btn-xs" style="margin-left:1px;float:left;"><font color="#FFFFFF">状态</font></a>
+                    <a href="?type=0" class="btn btn-info btn-xs" style="margin-left:3px;float:left;"><font color="#FFFFFF">全部</font></a>
+                </div>
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table id="cs_table" class="data-table table table-striped"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block js_logic %}
+    <script type="text/javascript">
+        $(function(){
+            var userOptions = {
+                "id":"cs_table",                                //必须 表格id
+                "head":["时间","类型","分类","账户","详细信息"],   //必须 thead表头
+                "key":["time","clas","type","id","gets"],   //必须 thead表头映射
+                "styles":["' class='col-md-1",
+                          "' class='col-md-1 hidden-xs",
+                          "' class='col-md-1",
+                          "' class='col-md-1",
+                          "' class='col-md-1"],   //必须宽度配置
+                "body":{{log_user | safe}},                     //必须 tbody 后台返回的数据展示
+                "foot":true,                                    // true/false  是否显示tfoot --- 默认false
+                "displayNum": 15,                               //必须   默认 15  每页显示行数
+                "groupDataNum":7,                             //可选    默认 7  组数
+                "foreAndAft":true,                           //分页-是否显示首页、尾页
+                "pageNumTip":true,                           //分页-是否显示当前页/总页码
+                "clickEventCallBack":function(data_index,tr_index){ //可选 给tbody tr绑定事件回调
+                    console.log("tr_index: "+tr_index+" data_index: "+data_index);
+                },
+                'sortContent':[                               //排序-参数（表头索引从0开始）
+                    {
+                        index:0,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.time;
+                            var b=b.time;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:1,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.clas;
+                            var b=b.clas;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:2,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.type;
+                            var b=b.type;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:3,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.id;
+                            var b=b.id;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:4,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.gets;
+                            var b=b.gets;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    }
+                ],
+                sort:true,                                    // 点击表头是否排序 true/false  --- 默认false
+                search:true,                                  // 默认为false 没有搜索
+                lang:{
+                    gopageButtonSearchText:"搜索"
+                }
+            }
+            var cs = new KingTable(null,userOptions);
+            $('th').click(function(){
+                if($(this).hasClass('asc'))
+                    $.cookie('log_sort_by', 'asc' + $(this).html(), { expires: 365});
+                else
+                    $.cookie('log_sort_by', 'desc' + $(this).html(), { expires: 365});                
+            });
+            if($.cookie('log_sort_by')!=null){
+                var sort=$.cookie('log_sort_by');
+                if(sort.indexOf('asc') == 0){
+                    sort=sort.substring(3);
+                    $('th:contains("' + sort + '")').trigger("click");
+                }else{
+                    sort=sort.substring(4);
+                    $('th:contains("' + sort + '")').trigger("click");                    
+                    $('th:contains("' + sort + '")').trigger("click");
+                }
+            }
+        })
+    </script>
+{% endblock%}
+{% block navibar %}
+    <div class="col-lg-10">
+        <h2>运行日记</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/">Home</a>
+            </li>
+            <li class="active">
+                <strong>Log</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% set active_page = "log" %}

@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% block content %}
+    {% if err_msg %}
+        <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            {{ err_msg }}
+        </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-md-9">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    账目记录
+                </div>
+                <!-- /.panel-heading -->
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table id="cs_table" class="data-table table table-striped"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    点卡面额/充值<font color="red">(输入卡号/密码请不要带有空格)</font>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="ibox-content">
+					<div class="form-group input-group">
+                        <span class="input-group-addon"><span style="width: 60px; display: inline-block;">剩余点数</span></span>
+                        <input type="text" class="form-control" value="{{ user_info.total_account_point }}" disabled="">
+					</div>
+					<div class="form-group input-group">
+                        <span class="input-group-addon"><span style="width: 60px; display: inline-block;">到期时间</span></span>
+                        <input type="text" class="form-control" value="{{ user_info.expire_date }}" disabled="">
+                    </div>
+				<form autocomplete="on" class="form-inline" role="form" action="/user/pay_submit" method="post">
+					    <input type="hidden" name="field" value="2">
+						<div class="form-group input-group">
+							<input type="text" class="form-control" name="pay_code" placeholder="充值卡卡号">
+							<input type="text" class="form-control" name="pay_key" placeholder="充值卡密码">
+							<span class="input-group-addon"><button type="submit" class="btn btn-danger">充值</button></span>
+						</div>
+					</form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block js_logic %}
+    <script type="text/javascript">
+        $(function(){
+            var userOptions = {
+                "id":"cs_table",                                //必须 表格id
+                "head":["时间","账户","类型","分类","详情"],   //必须 thead表头
+                "key":["time","account","clas","type","detail"],   //必须 thead表头映射
+                "styles":["' class='col-md-3",
+                          "' class='col-md-2",
+                          "' class='col-md-2",
+                          "' class='col-md-1",
+                          "' class='col-md-4"],   //必须宽度配置
+                "body":{{log_as | safe}},                     //必须 tbody 后台返回的数据展示
+                "foot":true,                                    // true/false  是否显示tfoot --- 默认false
+                "displayNum": 15,                               //必须   默认 15  每页显示行数
+                "groupDataNum":7,                             //可选    默认 7  组数
+                "foreAndAft":true,                           //分页-是否显示首页、尾页
+                "pageNumTip":true,                           //分页-是否显示当前页/总页码
+                "clickEventCallBack":function(data_index,tr_index){ //可选 给tbody tr绑定事件回调
+                    console.log("tr_index: "+tr_index+" data_index: "+data_index);
+                },
+                'sortContent':[                               //排序-参数（表头索引从0开始）
+                    {
+                        index:0,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.time;
+                            var b=b.time;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:1,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.account;
+                            var b=b.account;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:2,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.clas;
+                            var b=b.clas;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:3,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.type;
+                            var b=b.type;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:4,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.detail;
+                            var b=b.detail;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    }
+                ],
+                sort:true,                                    // 点击表头是否排序 true/false  --- 默认false
+                search:true,                                  // 默认为false 没有搜索
+                lang:{
+                    gopageButtonSearchText:"搜索"
+                }
+            }
+            var cs = new KingTable(null,userOptions);
+            $('#cs_table').find('th').click(function(){
+                if($(this).hasClass('asc'))
+                    $.cookie('payment_sort_by', 'asc' + $(this).html(), { expires: 365});
+                else
+                    $.cookie('payment_sort_by', 'desc' + $(this).html(), { expires: 365});                
+            });
+            var sort=$.cookie('payment_sort_by');
+            if(sort!=null){
+                if(sort.indexOf('asc') == 0){
+                    sort=sort.substring(3);
+                    $('#cs_table').find('th:contains("' + sort + '")').trigger("click");
+                }else{
+                    sort=sort.substring(4);
+                    $('#cs_table').find('th:contains("' + sort + '")').trigger("click");                    
+                    $('#cs_table').find('th:contains("' + sort + '")').trigger("click");
+                }
+            }
+        })
+    </script>
+{% endblock%}
+
+{% block navibar %}
+    <div class="col-lg-10">
+        <h2>账目记录</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/">Home</a>
+            </li>
+            <li>
+                Account
+            </li>
+            <li class="active">
+                <strong>Payment Logs</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% set active_page = "payment" %}

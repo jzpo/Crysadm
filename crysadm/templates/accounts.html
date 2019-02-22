@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+{% block css_block %}
+    <style>
+        @media (max-width: 640px) {
+            #add_account {
+                padding: 15px 20px 20px;
+            }
+        }
+    </style>
+{% endblock %}
+{% block content %}
+
+    <div class="row">
+        <div class="col-lg-12 .col-md-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    添加迅雷水晶账号
+                </div>
+                <div class="panel panel-default">
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <p>由于迅雷最近针对助手类工具，对帐号登录做了很多限制！导致添加帐号过快会频繁错误！</p>
+                        <p>解决办法：</p>
+                        <p>首先确保该帐号<font style="font-weight:bold;" color="red">没有绑定其它助手类工具</font>！然后<font style="font-weight:bold;" color="red">APP退出登录</font>，<font style="font-weight:bold;" color="red">等5分钟</font>再添加到云监工！不行的话继续等5分钟，多试几次！</p>
+                        <p>实在不行就到<font style="font-weight:bold;" color="red">迅雷安全中心查看登录日志</font>！看看有什么地方在登录你的帐号！！最后一个办法！<font style="font-weight:bold;" color="red">改密码</font>！等5分钟！再绑定！！</p>
+                        <h3>成功添加到云监工以后，请<font style="font-weight:bold;" color="red">不要再打开助手类工具</font>以保证云监工<font style="font-weight:bold;" color="red">7x24小时</font>正常不间断采集数据！</h3>
+                        <!-- Nav tabs -->
+                        <ul class="nav nav-tabs">
+                            <li class="{% if action is none or action == 'one' %}active{% endif %}"><a href="#one" data-toggle="tab" aria-expanded="true">单个添加</a>
+                            </li>
+                            <li class="{% if action == 'more' %}active{% endif %}"><a href="#more" data-toggle="tab" aria-expanded="false">批量添加</a>
+                            </li>
+                        </ul>
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div class="tab-pane fade {% if action is none or action == 'one' %}active in{% endif %}" id="one">
+                                <br />
+                                {% if (action is none or action == 'one') and error_message %}
+                                    <div class="col-lg-12">
+                                        <div class="alert alert-danger alert-dismissable">
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                            {{ error_message|safe }}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                {% if (action is none or action == 'one') and info_message %}
+                                    <div class="col-lg-12">
+                                        <div class="alert alert-info alert-dismissable">
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                            {{ info_message|safe }}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                <div id="add_account">
+                                    <form autocomplete="off" class="form-inline" role="form" action="/account/add" method="post">
+                                        <div class="form-group">
+                                            <label for="input_name" class="sr-only">账号</label>
+                                            <input style="display:none">
+                                            <input placeholder="请输入迅雷帐号" id="input_name" name="xl_username" autocomplete="off" class="form-control" type="text">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputPassowrd" class="sr-only">密码(不会明文保存)</label>
+                                            <input style="display:none">
+                                            <input placeholder="请输入帐号密码" id="inputPassowrd" name="xl_password" class="form-control" autocomplete="off" type="password">
+                                        </div>
+                                        <button type="submit" style="margin-bottom: 0px;" class="btn btn-white">确认</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade {% if action == 'more' %}active in{% endif %}" id="more">
+                                <br />
+                                {% if action == 'more' and error_message %}
+                                    <div class="col-lg-12">
+                                        <div class="alert alert-danger alert-dismissable">
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                            {{ error_message|safe }}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                {% if action == 'more' and info_message %}
+                                    <div class="col-lg-12">
+                                        <div class="alert alert-info alert-dismissable">
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                            {{ info_message|safe }}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                <form autocomplete="off" class="form-inline" role="form" action="/account/addmore" method="post">
+                                    格式:<br>
+                                    帐号1|密码1<br>
+                                    帐号2|密码2<br>
+                                    ......
+                                    <textarea style="min-height: 100px;width: 100%;" name="accounts" id="accounts"></textarea>
+                                    <br>
+                                    <button type="submit" style="margin-bottom: 0px;" class="btn btn-white">确认</button>&nbsp;&nbsp;添加每个账户需要2秒时间，请耐心等待。。。
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    已添加账号
+                    {% if accounts|length >0 %}
+                        <form style="margin-left: 3px;float:right;" role="form" action="/accounts/inactive_all" method="post">
+                            <button type="submit" style="margin: 0px;" class="btn btn-outline btn-success btn-xs">全部停止</button>
+                        </form>
+                        <form style="margin-left: 3px;float:right;" role="form" action="/accounts/active_all" method="post">
+                            <button type="submit" style="margin: 0px;" class="btn btn-outline btn-success btn-xs">全部启用</button>
+                        </form>
+                    {% endif %}
+                </div>
+                <!-- /.panel-heading -->
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table id="cs_table" class="table table-striped data-table"></table>
+                    </div>
+                    <!-- /.table-responsive -->
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+
+    </div>
+    <!-- /.row -->
+
+{% endblock %}
+{% block js_logic %}
+    <script>
+        function submitRemarkName(form)
+        {
+            form.ajaxSubmit({
+                type: 'post',
+                error: function(data) {
+                    //alert('请求出错：'+data);
+                }
+            });
+        }
+        $(function(){
+            var userOptions = {
+                "id":"cs_table",                                //必须 表格id
+                "head":["账号","用户名","ID","备注名","启用","状态","添加时间","操作"],   //必须 thead表头
+                "key":["account_name","username","user_id","remark_name","active","status","createdtime","operation"],   //必须 thead表头映射
+                "styles":["width:auto",
+                          "width:auto",
+                          "width:auto",
+                          "width:auto",
+                          "width:auto",
+                          "width:auto",
+                          "width:auto",
+                          "width:auto"],   //必须宽度配置
+                "body":{{accounts | safe}},                     //必须 tbody 后台返回的数据展示
+                "foot":true,                                    // true/false  是否显示tfoot --- 默认false
+                "displayNum": 10,                               //必须   默认 15  每页显示行数
+                "groupDataNum":7,                             //可选    默认 7  组数
+                "foreAndAft":{% if accounts|length < 20 %}false{% else %}true{% endif %},     //分页-是否显示首页、尾页
+                "pageNumTip":true,                           //分页-是否显示当前页/总页码
+                "clickEventCallBack":function(data_index,tr_index){ //可选 给tbody tr绑定事件回调
+                    console.log("tr_index: "+tr_index+" data_index: "+data_index);
+                },
+                'sortContent':[                               //排序-参数（表头索引从0开始）
+                    {
+                        index:0,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.account_name;
+                            var b=b.account_name;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:1,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.username;
+                            var b=b.username;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:2,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.user_id;
+                            var b=b.user_id;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:3,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.remark_name;
+                            var b=b.remark_name;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:4,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.active;
+                            var b=b.active;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:5,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.status;
+                            var b=b.status;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:6,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.createdtime;
+                            var b=b.createdtime;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    }
+                ],
+                sort:true,                                    // 点击表头是否排序 true/false  --- 默认false
+                search:true,                                  // 默认为false 没有搜索
+                lang:{
+                    gopageButtonSearchText:"搜索"
+                }
+            }
+            var cs = new KingTable(null,userOptions);
+        })
+    </script>
+{% endblock %}
+
+{% block navibar %}
+    <div class="col-lg-10">
+        <h2>迅雷账号</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/">Home</a>
+            </li>
+            <li class="active">
+                <strong>Accounts</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% set active_page = "accounts" %}

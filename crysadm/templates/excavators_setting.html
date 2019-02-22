@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    今日统计
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <form action="/excavators_select_row/today" method="post">
+                        <table class="table table-striped">
+                            <tr>
+                                <td class='col-md-3'>
+                                    <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="phone" {% if 'phone' in rows_today_info %} checked='checked' {% endif %} />手机号</label> 
+                                </td> 
+                                <td class='col-md-3'>
+                                    <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="display_name" {% if 'display_name' in rows_today_info %} checked='checked' {% endif %} />账户名</label> 
+                                </td> 
+                                <td class='col-md-3'>
+                                    <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="pdc"  {% if 'pdc' in rows_today_info %} checked='checked' {% endif %} />水晶产量</label> 
+                                </td> 
+                                <td class='col-md-3'>
+                                    <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="td_s"  {% if 'td_s' in rows_today_info %} checked='checked' {% endif %} />秘银产量</label>
+                                </td> 
+                            </tr>
+                            <tr>
+                                <td class='col-md-3'>
+                                    <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="s"  {% if 's' in rows_today_info %} checked='checked' {% endif %} />秘银存量</label> 
+                                </td> 
+                                <td class='col-md-3'>
+                                    <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="td_box_pdc"  {% if 'td_box_pdc' in rows_today_info %} checked='checked' {% endif %} />宝箱</label> 
+                                </td> 
+                                <td class='col-md-3'>
+                                    <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="td_not_in_a"  {% if 'td_not_in_a' in rows_today_info %} checked='checked' {% endif %} />未收取</label> 
+                                </td> 
+                                <td class='col-md-3'>
+                                    <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="td_c"  {% if 'td_c' in rows_today_info %} checked='checked' {% endif %} />今日收益</label>
+                                </td> 
+                            </tr>
+                            <tr>
+                                <td class='col-md-3'>
+                                    <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="r_can_use"  {% if 'r_can_use' in rows_today_info %} checked='checked' {% endif %} />余额</label> 
+                                </td>                                 
+                                <td class='col-md-3'>
+                                    <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="r_h_a"  {% if 'r_h_a' in rows_today_info %} checked='checked' {% endif %} />总收入 </label> 
+                                </td>                                 
+                                <td class='col-md-3'>
+                                    <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="updated_time"  {% if 'updated_time' in rows_today_info %} checked='checked' {% endif %} />更新时间 </label> 
+                                </td>                                 
+                            </tr>
+                        </table>
+                        <button type="submit" class="btn btn-default">提交</button>
+                        <a href="/excavators" class="btn btn-default">返回</a>
+                    </form>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    设备信息
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <form action="/excavators_select_row/device" method="post">
+                        <table class="table table-striped">
+                            <tr>
+                                <td class='col-md-3'>
+                                    <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="phone" {% if 'phone' in rows_info %} checked='checked' {% endif %} />手机号</label> 
+                                </td> 
+                                <td class='col-md-3'>
+                                    <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="mid" {% if 'mid' in rows_info %} checked='checked' {% endif %} />矿主ID</label> 
+                                </td> 
+                                <td class='col-md-3'>
+                                    <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="device_name"  {% if 'device_name' in rows_info %} checked='checked' {% endif %} />矿机名</label> 
+                                </td> 
+                                <td class='col-md-3'>
+                                    <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="hardware_model"  {% if 'hardware_model' in rows_info %} checked='checked' {% endif %} />类型</label>
+                                </td> 
+                            </tr>
+                            <tr>
+                                <td class='col-md-3'>
+                                    <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="system_version"  {% if 'system_version' in rows_info %} checked='checked' {% endif %} />固件版本</label> 
+                                </td> 
+                                <td class='col-md-3'>
+                                    <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="dcdn_upload_speed"  {% if 'dcdn_upload_speed' in rows_info %} checked='checked' {% endif %} />上行速度</label> 
+                                </td> 
+                                <td class='col-md-3'>
+                                    <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="dcdn_download_speed"  {% if 'dcdn_download_speed' in rows_info %} checked='checked' {% endif %} />下行速度</label> 
+                                </td> 
+                                <td class='col-md-3'>
+                                    <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="space_used"  {% if 'space_used' in rows_info %} checked='checked' {% endif %} />存储状态</label>
+                                </td> 
+                            </tr>
+                            <tr>
+                                <td class='col-md-3'>
+                                    <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="status"  {% if 'status' in rows_info %} checked='checked' {% endif %} />矿机状态</label> 
+                                </td>                                 
+                                <td class='col-md-3'>
+                                    <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="dcdn_upnp_message"  {% if 'dcdn_upnp_message' in rows_info %} checked='checked' {% endif %} />UPNP</label> 
+                                </td>                                 
+                                <td class='col-md-3'>
+                                    <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="lan_ip"  {% if 'lan_ip' in rows_info %} checked='checked' {% endif %} />内网IP</label> 
+                                </td>                                 
+                                <td class='col-md-3'>
+                                    <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="ip"  {% if 'ip' in rows_info %} checked='checked' {% endif %} />公网IP</label> 
+                                </td>                                 
+                            </tr>
+                            <tr>
+                                <td class='col-md-3'>
+                                    <label class="btn btn-info btn-xs"><input name="rows" type="checkbox" value="password"  {% if 'password' in rows_info %} checked='checked' {% endif %} />ROOT密码</label>
+                                </td>                                 
+                            </tr>
+                        </table>
+                        <button type="submit" class="btn btn-default">提交</button>
+                        <a href="/excavators" class="btn btn-default">返回</a>
+                    </form>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+{% endblock %}
+
+{% block navibar %}
+    <div class="col-lg-10">
+        <h2>设备管理</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/">Home</a>
+            </li>
+            <li>
+                Excavators
+            </li>
+            <li class="active">
+                <strong>Setting</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% set active_page = "excavators_info" %}

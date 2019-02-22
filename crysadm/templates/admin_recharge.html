@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-lg-9 col-md-9 col-xs-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    充值卡列表
+                </div>
+                <!-- /.panel-heading -->
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table id="cs_table" class="data-table table table-striped"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-xs-12">
+            {% if err_msg %}
+                <div class="alert alert-danger alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    {{ err_msg }}
+                </div>
+            {% endif %}
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    生成充值卡
+
+                </div>
+                <!-- /.panel-heading -->
+                <div class="ibox-content">
+                    <form role="form" style="display:inline-block;" action="/generate/recharge_cards" method="post">
+                        <div class="form-group input-group">
+                            <span class="input-group-addon"><i style="width: 16px;" class="fa fa-credit-card"></i></span>
+                            <input type="text" class="form-control" name="name" placeholder="名称">
+                        </div>
+                        <div class="form-group input-group">
+                            <span class="input-group-addon"><i style="width: 16px;" class="fa fa-cube"></i></span>
+                            <input type="text" class="form-control" name="points" placeholder="点数">
+                        </div>
+                        <div class="form-group input-group">
+                            <span class="input-group-addon"><i style="width: 16px;" class="fa fa-cubes"></i></span>
+                            <input type="text" class="form-control" name="num" placeholder="数量">
+                        </div>
+                        <button type="submit" style="border-radius: 0;" class="btn btn-success">生成充值卡</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    已使用列表
+                </div>
+                <!-- /.panel-heading -->
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table id="cs_table_2" class="data-table table table-striped"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js_logic %}
+    <script type="text/javascript">
+        $(function(){
+            var userOptions = {
+                "id":"cs_table",                                //必须 表格id
+                "head":["名称","卡号","密码","点数","状态","操作"],   //必须 thead表头
+                "key":["name","code","key","points","status","operation"],   //必须 thead表头映射
+                "styles":["' class='col-md-3",
+                          "' class='col-md-3",
+                          "' class='col-md-3",
+                          "' class='col-md-1",
+                          "' class='col-md-1",
+                          "' class='col-md-1"],   //必须宽度配置
+                "body":{{recharge_cards | safe}},                     //必须 tbody 后台返回的数据展示
+                "foot":true,                                    // true/false  是否显示tfoot --- 默认false
+                "displayNum": 15,                               //必须   默认 15  每页显示行数
+                "groupDataNum":7,                             //可选    默认 7  组数
+                "foreAndAft":true,                           //分页-是否显示首页、尾页
+                "pageNumTip":true,                           //分页-是否显示当前页/总页码
+                "clickEventCallBack":function(data_index,tr_index){ //可选 给tbody tr绑定事件回调
+                    console.log("tr_index: "+tr_index+" data_index: "+data_index);
+                },
+                'sortContent':[                               //排序-参数（表头索引从0开始）
+                    {
+                        index:0,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.name;
+                            var b=b.name;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:3,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.points;
+                            var b=b.points;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:4,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.status;
+                            var b=b.status;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    }
+                ],
+                sort:true,                                    // 点击表头是否排序 true/false  --- 默认false
+                search:true,                                  // 默认为false 没有搜索
+                lang:{
+                    gopageButtonSearchText:"搜索"
+                }
+            }
+            var cs = new KingTable(null,userOptions);
+            var userOptions = {
+                "id":"cs_table_2",                                //必须 表格id
+                "head":["名称","卡号","密码","点数","使用者"],   //必须 thead表头
+                "key":["name","code","key","points","user","operation"],   //必须 thead表头映射
+                "styles":["' class='col-md-3",
+                          "' class='col-md-3",
+                          "' class='col-md-3",
+                          "' class='col-md-1",
+                          "' class='col-md-2"],   //必须宽度配置
+                "body":{{used_cards | safe}},                     //必须 tbody 后台返回的数据展示
+                "foot":true,                                    // true/false  是否显示tfoot --- 默认false
+                "displayNum": 15,                               //必须   默认 15  每页显示行数
+                "groupDataNum":7,                             //可选    默认 7  组数
+                "foreAndAft":true,                           //分页-是否显示首页、尾页
+                "pageNumTip":true,                           //分页-是否显示当前页/总页码
+                "clickEventCallBack":function(data_index,tr_index){ //可选 给tbody tr绑定事件回调
+                    console.log("tr_index: "+tr_index+" data_index: "+data_index);
+                },
+                'sortContent':[                               //排序-参数（表头索引从0开始）
+                    {
+                        index:0,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.name;
+                            var b=b.name;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:3,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.points;
+                            var b=b.points;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    },
+                    {
+                        index:4,
+                        compareCallBack:function(a,b){//排序比较的回调函数
+                            var a=a.user;
+                            var b=b.user;
+                            if(a < b)
+                                return -1;
+                            else if(a == b)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                    }
+                ],
+                sort:true,                                    // 点击表头是否排序 true/false  --- 默认false
+                search:true,                                  // 默认为false 没有搜索
+                lang:{
+                    gopageButtonSearchText:"搜索"
+                }
+            }
+            var cs = new KingTable(null,userOptions);
+            $('th').click(function(){
+                if($(this).hasClass('asc'))
+                    $.cookie('cards_sort_by', 'asc' + $(this).html(), { expires: 365});
+                else
+                    $.cookie('cards_sort_by', 'desc' + $(this).html(), { expires: 365});
+            });
+            if($.cookie('cards_sort_by')!=null){
+                var sort=$.cookie('cards_sort_by');
+                if(sort.indexOf('asc') == 0){
+                    sort=sort.substring(3);
+                    $('th:contains("' + sort + '")').trigger("click");
+                }else{
+                    sort=sort.substring(4);
+                    $('th:contains("' + sort + '")').trigger("click");                    
+                    $('th:contains("' + sort + '")').trigger("click");
+                }
+            }
+            $('th').click(function(){
+                if($(this).hasClass('asc'))
+                    $.cookie('used_cards_sort_by', 'asc' + $(this).html(), { expires: 365});
+                else
+                    $.cookie('used_cards_sort_by', 'desc' + $(this).html(), { expires: 365});
+            });
+            if($.cookie('used_cards_sort_by')!=null){
+                var sort=$.cookie('used_cards_sort_by');
+                if(sort.indexOf('asc') == 0){
+                    sort=sort.substring(3);
+                    $('th:contains("' + sort + '")').trigger("click");
+                }else{
+                    sort=sort.substring(4);
+                    $('th:contains("' + sort + '")').trigger("click");                    
+                    $('th:contains("' + sort + '")').trigger("click");
+                }
+            }
+        })
+    </script>
+{% endblock%}
+
+{% block navibar %}
+    <div class="col-lg-10">
+        <h2>充值卡管理</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/">Home</a>
+            </li>
+            <li>
+                Admin
+            </li>
+            <li class="active">
+                <strong>Recharge Cards</strong>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% set active_page = "recharge_cards" %}

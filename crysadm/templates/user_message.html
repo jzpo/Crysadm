@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block css_block %}
+    <link href="../static/css/plugins/summernote/summernote.css" rel="stylesheet">
+    <link href="../static/css/plugins/summernote/summernote-bs3.css" rel="stylesheet">
+
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="mail-box-header">
+            <div class="pull-right tooltip-demo">
+                <a href="/messagebox" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="已阅"><i class="fa fa-arrow-left"></i> 已阅</a>
+                <a href="/messagebox" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="返回"><i class="fa fa-arrow-left"></i> 返回</a>
+            </div>
+            <h2>
+                查看消息
+            </h2>
+            <div class="mail-tools tooltip-demo m-t-md">
+                <h3>
+                    <span class="font-noraml">主题: </span>{{msg.subject}}
+                </h3>
+                <h5>
+                    <span class="pull-right font-noraml">{{msg.time}}</span>
+                    <span class="font-noraml">发件人: </span>{{msg.sender}}
+                </h5>
+            </div>
+        </div>
+        <div class="mail-box">
+            <div class="mail-body">
+                <div class="mail-text h-200">
+                    <div class="summernote"></div>
+                    <form id="send_form" style="margin-top: 10px" class="form-horizontal" action="/message/reply" method="post">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">简述:</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" name="summary" name="简述" placeholder="简要描述你的回复内容">
+                            </div>
+                        </div>
+                        <input type="hidden" id="content" name="content" value='{{msg.content|safe}}'>
+                        <input type="hidden" name="origin_mail" value='{{msg.id}}'>
+                    </form>
+                    <div class="summernote_reply"></div>
+                </div>
+            </div>
+            <div class="mail-body text-right tooltip-demo">
+                    <a class="btn btn-sm btn-white" id="send_email" href="#"><i class="fa fa-reply"></i> 回复</a>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block navibar %}
+    <div class="col-lg-10">
+        <h2>通知中心</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/">Home</a>
+            </li>
+            <li class="active">
+                Notification
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+{% block js_logic %}
+    <script src="../static/js/plugins/summernote/summernote.min.js"></script>
+    <script src="../static/js/plugins/summernote/summernote-zh-CN.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.summernote').html($('#content').val());
+            $('.summernote').summernote({
+                disableDragAndDrop: true,
+                minHeight: 150,
+                toolbar : [],
+                lang: 'zh-CN'
+            });
+            $('.summernote').next().css('min-height','auto');
+            $('.summernote').next().children('.note-toolbar').css('display','none');
+            $('.summernote').next().children('.note-editable').attr('contenteditable',false);
+            $('.summernote_reply').summernote({
+                disableDragAndDrop: true,
+                minHeight: 150,
+                toolbar : [
+                    ['style', ['style']],
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['font', ['fontname']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']],
+                    ['table', ['table']],
+                    ['Insert', ['link']],
+                    ['Misc', ['codeview','help']]
+                ],
+                lang: 'zh-CN'
+            });
+            $('#send_email').click(function (){
+               $('#content').val($('.summernote_reply').code());
+               $('#send_form').submit();
+            });
+       });
+    </script>
+{% endblock %}
